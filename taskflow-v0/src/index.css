@@ -51,4 +51,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); ou
 .prio--2 { background: #fef3c7; color: #78350f; }
 .prio--3 { background: #f1f5f9; color: #475569; }
 .empty { color: var(--muted); text-align: center; }
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.timer { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.timer__time { font-size: 2.5rem; font-weight: 700; font-variant-numeric: tabular-nums; margin-right: auto; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

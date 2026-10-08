@@ -1,4 +1,6 @@
-function Clock() {
+import { useEffect, useState } from "react";
+
+export function Clock() {
     console.log("1. rendu");
     const [now, setNow] = useState(new Date());
 
@@ -10,4 +12,6 @@ function Clock() {
             clearInterval(id);
         };
     }, []);
+
+    return <p>{now.toLocaleTimeString()}</p>;
 }

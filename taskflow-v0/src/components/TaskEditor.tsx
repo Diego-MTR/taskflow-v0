@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Task } from "../types";
-import { countWords } from "../utils";
 
-function TaskEditor({ task }: Props) {
+type Props = { task: Task };
+
+const countWords = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
+
+export function TaskEditor({ task }: Props) {
   const [title, setTitle] = useState(task.title); // case 1
-  const [saving, setSaving] = useState(false); // case 2
+  const [saving] = useState(false); // case 2
   const inputRef = useRef<HTMLInputElement>(null); // case 3
 
   useEffect(() => {
