@@ -13,9 +13,13 @@ function Board() {
   // Tâches sauvegardées dans le navigateur (hook personnalisé)
   const [tasks, setTasks] = useLocalStorage<Task[]>("taskflow-tasks", []);
   const [filter, setFilter] = useState<Filter>("all");
+  const [search, setSearch] = useState("");
 
   // États dérivés : calculés pendant le rendu, jamais dupliqués dans un useState
-  const visible = filter === "all" ? tasks : tasks.filter((t) => t.status === filter);
+  const query = search.trim().toLowerCase();
+  const visible = tasks.filter(
+    (t) => (filter === "all" || t.status === filter) && t.title.toLowerCase().includes(query),
+  );
   const remaining = tasks.filter((t) => t.status !== "done").length;
 
   // Synchroniser le titre de l'onglet avec les tâches restantes
@@ -28,6 +32,10 @@ function Board() {
   const cycle = (id: string) =>
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, status: nextStatus(t.status) } : t)));
   const remove = (id: string) => setTasks((prev) => prev.filter((t) => t.id !== id));
+  // Bonus : tout effacer, après confirmation
+  const clearAll = () => {
+    if (window.confirm(`Supprimer les ${tasks.length} tâche(s) ?`)) setTasks([]);
+  };
 
   return (
     <main className="app">
@@ -35,11 +43,28 @@ function Board() {
         <h1>TaskFlow <small>{remaining} restante(s)</small></h1>
         <ThemeToggle />
       </header>
-      <TaskForm onAdd={add} />
-      <FilterBar value={filter} onChange={setFilter} />
-      <TaskList tasks={visible} onCycle={cycle} onRemove={remove} />
       <Card title="Concentration">
         <FocusTimer />
+      </Card>
+      <Card title="Mes tâches" actions={<FilterBar value={filter} onChange={setFilter} />}>
+        <TaskForm onAdd={add} />
+        <div className="toolbar">
+          <label htmlFor="search" className="sr-only">
+            Rechercher une tâche
+          </label>
+          <input
+            id="search"
+            type="search"
+            className="search"
+            value={search}
+            placeholder="Rechercher par titre…"
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <button type="button" className="danger" onClick={clearAll} disabled={tasks.length === 0}>
+            Tout effacer
+          </button>
+        </div>
+        <TaskList tasks={visible} onCycle={cycle} onRemove={remove} />
       </Card>
     </main>
   );
